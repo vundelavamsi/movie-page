@@ -62,7 +62,7 @@ nav .menu span {
     border-radius: 0.2rem;
 }
 
-@media (max-width: 425px) {
+@media screen and (max-width: 480px) {
     nav .menu {
         display: flex;
     }

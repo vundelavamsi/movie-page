@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 import MovieCard from "../MovieCard";
 
 import "./index.css";
@@ -9,6 +10,7 @@ const TOP_RATED_MOVIES_API =
 const TopRated = () => {
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState("");
+  const [totalPages, setTotalPages] = useState(500);
 
   useEffect(() => {
     fetch(TOP_RATED_MOVIES_API)
@@ -37,6 +39,19 @@ const TopRated = () => {
     setQuery(e.target.value);
   };
 
+  const fetchMovies = async (currentPage) => {
+    const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=b8e9bcb7dd64c5e3f9d21e9508ee0f7f&language=en-US&page=${currentPage}`)
+    const data = await res.json();
+    return data.results;
+  }
+
+  const hangelePageClick = async (data) => {
+    console.log(data.selected+1);
+    fetchMovies(data.selected+1)
+    const specificPageMovies = await fetchMovies(data.selected+1)
+    setMovies(specificPageMovies);
+  }
+
   return (
     <>
       <div className="heading-search-container">
@@ -62,6 +77,25 @@ const TopRated = () => {
             id={eachMovie.id}
           />
         ))}
+        <ReactPaginate
+        previousLabel={"prev"}
+        nextLabel={"next"}
+        breakLabel={"..."}
+        pageCount={totalPages}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={1}
+        onPageChange={hangelePageClick}
+        containerClassName={'pagination justfy-content-center pagination-container'}
+        pageClassName={'page-item m-1'}
+        pageLinkClassName={'page-link'}
+        previousClassName={'page-item m-1'}
+        previousLinkClassName={'page-link'}
+        nextClassName={'page-item m-1'}
+        nextLinkClassName={'page-link'}
+        breakClassName={'page-item m-1'}
+        breakLinkClassName={'page-link'}
+        activeClassName={'active'}
+      />
       </div>
     </>
   );
